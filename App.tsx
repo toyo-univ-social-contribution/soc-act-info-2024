@@ -264,8 +264,7 @@ const Home = () => {
         <div className="relative z-10 space-y-6">
           <h2 className="text-3xl sm:text-4xl font-black italic tracking-tighter">"Philosophy as the Foundation of all Studies"</h2>
           <p className="text-blue-100/80 font-bold max-w-2xl leading-relaxed">
-            諸学の基礎は哲学にあり。東洋大学は、教育・研究の成果を社会に還元し、<br className="hidden sm:block" />
-            より良い未来の創造に貢献し続けます。
+            「諸学の基礎は哲学にあり」　東洋大学は、教育・研究の成果を社会に還元し、より良い未来の創造に貢献し続けます。<br className="hidden sm:block" />
           </p>
         </div>
         <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.1),transparent)] pointer-events-none"></div>
@@ -404,7 +403,6 @@ const App = () => {
             <p className="text-gray-400 text-[10px] font-black uppercase tracking-[0.5em]">© 2025 Toyo University Archive</p>
             <div className="max-w-2xl mx-auto text-gray-300 text-[11px] font-bold leading-relaxed px-6">
               本サイトは、2024年度の東洋大学教員による社会貢献活動の実績をとりまとめたディレクトリです。<br />
-              掲載内容に関するお問い合わせは、大学広報課までお願いいたします。
             </div>
           </div>
         </footer>
