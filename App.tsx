@@ -361,10 +361,10 @@ const FacultyDetail = () => {
       <h1 className="text-5xl sm:text-7xl font-black tracking-tighter leading-none text-gray-900">{profile.name}</h1>
     </div>
           <div className="text-center sm:text-right pr-4">
-            <div className="text-3xl sm:text-4xl font-bold text-gray-300 leading-none mb-1 italic">
+            <div className="text-3xl sm:text-4xl font-bold text-gray-500 leading-none mb-1 italic">
         {profile.activities.length}
       </div>
-      <div className="text-[9px] font-black uppercase tracking-[0.3em] text-gray-300">Reports</div>
+      <div className="text-[9px] font-black uppercase tracking-[0.3em] text-gray-500">Reports</div>
     </div>
   </div>
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-600/20 rounded-full blur-[120px] -mr-40 -mt-40"></div>
