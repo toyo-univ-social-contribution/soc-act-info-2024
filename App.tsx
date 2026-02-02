@@ -260,15 +260,15 @@ const Home = () => {
       </section>
 
       {/* Footer Banner */}
-      <section className="bg-blue-900 rounded-[4rem] p-12 sm:p-20 text-white shadow-2xl relative overflow-hidden text-center sm:text-center">
-        <div className="relative z-10 space-y-6">
-          <h2 className="text-3xl sm:text-4xl font-black italic tracking-tighter">"Philosophy as the Foundation of all Studies"</h2>
-          <p className="text-blue-100/80 font-bold max-w-2xl leading-relaxed">
-            「諸学の基礎は哲学にあり」　東洋大学は、教育・研究の成果を社会に還元し、より良い未来の創造に貢献し続けます。<br className="hidden sm:block" />
-          </p>
-        </div>
-        <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.1),transparent)] pointer-events-none"></div>
-      </section>
+      <section className="bg-blue-900 rounded-[3rem] sm:rounded-[4rem] p-10 sm:p-20 text-white shadow-2xl relative overflow-hidden text-center">
+        <div className="relative z-10 space-y-4 sm:space-y-6 flex flex-col items-center">
+          <h2 className="text-2xl sm:text-4xl font-black italic tracking-tighter w-full">"Philosophy as the Foundation of all Studies"</h2>
+          <p className="text-blue-100/90 font-bold text-[9px] min-[400px]:text-[11px] sm:text-sm md:text-base whitespace-nowrap leading-tight w-full max-w-full px-2">
+      「諸学の基礎は哲学にあり」 東洋大学は、教育・研究の成果を社会に還元し、より良い未来の創造に貢献し続けます。
+    </p>
+  </div>
+  <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.1),transparent)] pointer-events-none"></div>
+</section>
     </div>
   );
 };
