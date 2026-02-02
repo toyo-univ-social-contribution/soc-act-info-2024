@@ -352,7 +352,7 @@ const FacultyDetail = () => {
         { label: profile.name }
       ]} />
 
-      <header className="mb-12 bg-gray-900 text-white p-12 sm:p-20 rounded-[4rem] relative overflow-hidden shadow-2xl">
+      <header className="mb-12 bg-white border border-gray-100 p-10 sm:p-16 rounded-[3rem] sm:rounded-[4rem] relative overflow-hidden shadow-sm">
         <div className="relative z-10 flex flex-col sm:flex-row sm:items-end justify-between gap-10">
           <div className="space-y-4">
             <span className="px-3 py-1 bg-blue-600 text-[10px] font-black rounded uppercase tracking-widest">{profile.department}</span>
