@@ -260,7 +260,7 @@ const Home = () => {
       </section>
 
       {/* Footer Banner */}
-      <section className="bg-blue-900 rounded-[4rem] p-12 sm:p-20 text-white shadow-2xl relative overflow-hidden text-center sm:text-left">
+      <section className="bg-blue-900 rounded-[4rem] p-12 sm:p-20 text-white shadow-2xl relative overflow-hidden text-center sm:text-center">
         <div className="relative z-10 space-y-6">
           <h2 className="text-3xl sm:text-4xl font-black italic tracking-tighter">"Philosophy as the Foundation of all Studies"</h2>
           <p className="text-blue-100/80 font-bold max-w-2xl leading-relaxed">
