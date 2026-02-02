@@ -174,11 +174,11 @@ const Home = () => {
           Toyo University Archive
         </div>
         <h1 className="text-5xl sm:text-7xl font-black text-gray-900 tracking-tighter leading-none">
-          社会貢献活動<br /><span className="text-blue-900">DIRECTORY</span>
+          2024年度 社会貢献活動<br /><span className="text-blue-900">DIRECTORY</span>
         </h1>
         <p className="text-base sm:text-lg text-gray-500 max-w-xl mx-auto font-bold leading-relaxed">
-          東洋大学の教員による地域連携、教育支援、<br className="hidden sm:block" />
-          国際協力などの活動実績を公開しています。
+          東洋大学の教員・事務局による<br className="hidden sm:block" />
+          社会貢献活動情報を公開しています。
         </p>
 
         {/* Improved Search Bar */}
