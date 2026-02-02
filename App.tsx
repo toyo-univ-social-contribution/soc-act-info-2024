@@ -254,7 +254,7 @@ const Home = () => {
           </div>
           <h2 className="text-3xl font-black text-gray-400 mb-4 tracking-tighter">組織・プロジェクト別</h2>
           <p className="text-gray-400 font-bold text-sm">
-            研究所や学部単位での大規模プロジェクト。現在データメンテナンス中です。
+            研究所や学部単位でのプロジェクトについては現在データメンテナンス中です。
           </p>
         </div>
       </section>
