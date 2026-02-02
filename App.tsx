@@ -353,16 +353,20 @@ const FacultyDetail = () => {
       ]} />
 
       <header className="mb-12 bg-white border border-gray-100 p-10 sm:p-16 rounded-[3rem] sm:rounded-[4rem] relative overflow-hidden shadow-sm">
-        <div className="relative z-10 flex flex-col sm:flex-row sm:items-end justify-between gap-10">
-          <div className="space-y-4">
-            <span className="px-3 py-1 bg-blue-600 text-[10px] font-black rounded uppercase tracking-widest">{profile.department}</span>
-            <h1 className="text-5xl sm:text-7xl font-black tracking-tighter leading-none">{profile.name}</h1>
-          </div>
-          <div className="bg-white/10 backdrop-blur-xl border border-white/10 rounded-3xl p-8 text-center min-w-[140px] shadow-2xl">
-            <div className="text-5xl font-black mb-1 italic leading-none">{profile.activities.length}</div>
-            <div className="text-[9px] font-black uppercase tracking-[0.3em] opacity-50">Reports</div>
-          </div>
-        </div>
+  <div className="relative z-10 flex flex-col sm:flex-row sm:items-end justify-between gap-8 sm:gap-10">
+    <div className="space-y-3 sm:space-y-4">
+            <span className="inline-block px-4 py-1 bg-blue-900 text-white text-[11px] font-bold rounded-lg uppercase tracking-wider shadow-sm">
+        {profile.department}
+      </span>
+      <h1 className="text-5xl sm:text-7xl font-black tracking-tighter leading-none text-gray-900">{profile.name}</h1>
+    </div>
+          <div className="text-center sm:text-right pr-4">
+            <div className="text-3xl sm:text-4xl font-bold text-gray-300 leading-none mb-1 italic">
+        {profile.activities.length}
+      </div>
+      <div className="text-[9px] font-black uppercase tracking-[0.3em] text-gray-300">Reports</div>
+    </div>
+  </div>
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-600/20 rounded-full blur-[120px] -mr-40 -mt-40"></div>
       </header>
 
