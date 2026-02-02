@@ -400,7 +400,7 @@ const App = () => {
         <footer className="bg-white border-t border-gray-100 py-24 sm:py-32">
           <div className="max-w-7xl mx-auto px-4 text-center space-y-8">
             <div className="w-12 h-1 bg-gray-100 mx-auto rounded-full"></div>
-            <p className="text-gray-400 text-[10px] font-black uppercase tracking-[0.5em]">© 2025 Toyo University Archive</p>
+            <p className="text-gray-400 text-[10px] font-black uppercase tracking-[0.5em]">© 2025 Toyo University</p>
             <div className="max-w-2xl mx-auto text-gray-300 text-[11px] font-bold leading-relaxed px-6">
               本サイトは、2024年度の東洋大学教員による社会貢献活動の実績をとりまとめたディレクトリです。<br />
             </div>
