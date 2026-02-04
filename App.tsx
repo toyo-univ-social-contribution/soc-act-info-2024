@@ -444,32 +444,7 @@ const OrganizationDetail = () => {
   const groupedActivities = useMemo(() => {
     if (!isResearchPromotion) return null;
     
-    const grouped = activities.reduce((acc, curr) => {
-      let groupKey = "その他";
-      const org = curr.organizer;
-      
-      if (org.includes("人間科学総合研究所")) groupKey = "人間科学総合研究所";
-      else if (org.includes("現代社会総合研究所")) groupKey = "現代社会総合研究所";
-      else if (org.includes("東洋学研究所")) groupKey = "東洋学研究所";
-      else if (org.includes("アジア文化研究所")) groupKey = "アジア文化研究所";
-      else if (org.includes("地域活性化研究所")) groupKey = "地域活性化研究所";
-      else if (org.includes("工業技術研究所")) groupKey = "工業技術研究所";
-      else if (org.includes("ライフイノベーション研究所")) groupKey = "ライフイノベーション研究所";
-      else if (org.includes("バイオ・ナノエレクトロニクス研究センター")) groupKey = "バイオ・ナノエレクトロニクス研究センター";
-      else if (org.includes("アジアPPP 研究所") || org.includes("アジアPPP研究所")) groupKey = "アジアPPP 研究所";
-      else if (org.includes("グローバル・イノベーション学研究センター") || org.includes("グローバル・イノベーション学研究センター")) groupKey = "グローバル・イノベーション学研究センター";
-      else if (org.includes("生体医工学研究センター")) groupKey = "生体医工学研究センター";
-      else if (org.includes("PPP研究センター") || org.includes("PPP 研究センター")) groupKey = "PPP研究センター";
-      else if (org.includes("国際共生社会研究センター")) groupKey = "国際共生社会研究センター";
-      else if (org.includes("福祉社会開発研究センター")) groupKey = "福祉社会開発研究センター";
-      else if (org.includes("バイオレジリエンス研究プロジェクト") || org.includes("BRRP")) groupKey = "バイオレジリエンス研究プロジェクト（BRRP）";
-      else groupKey = org.split(/[（(【]/)[0].trim() || "その他";
-
-      if (!acc[groupKey]) acc[groupKey] = [];
-      acc[groupKey].push(curr);
-      return acc;
-    }, {} as Record<string, Activity[]>);
-
+    // 正式な15組織の並び順と名称
     const groupOrder = [
       "人間科学総合研究所", "現代社会総合研究所", "東洋学研究所", "アジア文化研究所",
       "地域活性化研究所", "工業技術研究所", "ライフイノベーション研究所", 
@@ -479,13 +454,38 @@ const OrganizationDetail = () => {
       "バイオレジリエンス研究プロジェクト（BRRP）"
     ];
 
+    const grouped = activities.reduce((acc, curr) => {
+      let groupKey = "";
+      const org = curr.organizer;
+      
+      // マッピングロジック（特定の主催者名を親組織に集約）
+      if (org.includes("人間科学総合研究所")) groupKey = "人間科学総合研究所";
+      else if (org.includes("現代社会総合研究所")) groupKey = "現代社会総合研究所";
+      else if (org.includes("東洋学研究所")) groupKey = "東洋学研究所";
+      else if (org.includes("アジア文化研究所")) groupKey = "アジア文化研究所";
+      else if (org.includes("地域活性化研究所")) groupKey = "地域活性化研究所";
+      else if (org.includes("工業技術研究所") || org.includes("TSO International")) groupKey = "工業技術研究所";
+      else if (org.includes("ライフイノベーション研究所")) groupKey = "ライフイノベーション研究所";
+      else if (org.includes("バイオ・ナノエレクトロニクス研究センター") || org.includes("BNC")) groupKey = "バイオ・ナノエレクトロニクス研究センター";
+      else if (org.includes("アジアPPP 研究所") || org.includes("アジアPPP研究所") || org.includes("Asian Development Bank")) groupKey = "アジアPPP 研究所";
+      else if (org.includes("グローバル・イノベーション学研究センター") || org.includes("GIC")) groupKey = "グローバル・イノベーション学研究センター";
+      else if (org.includes("生体医工学研究センター") || org.includes("バイオミメティクス")) groupKey = "生体医工学研究センター";
+      else if (org.includes("PPP研究センター") || org.includes("PPP 研究センター") || org.includes("国土交通省") || org.includes("主催：東洋大学")) groupKey = "PPP研究センター";
+      else if (org.includes("国際共生社会研究センター") || org.includes(" ORC ") || org.includes(" CeSDeS ")) groupKey = "国際共生社会研究センター";
+      else if (org.includes("福祉社会開発研究センター") || org.includes(" CDWS ")) groupKey = "福祉社会開発研究センター";
+      else if (org.includes("バイオレジリエンス") || org.includes("BRRP") || org.includes("KISTEC") || org.includes("かわさきサイエンス")) groupKey = "バイオレジリエンス研究プロジェクト（BRRP）";
+
+      // groupOrderに含まれる正規の名称のみを採用
+      if (groupKey && groupOrder.includes(groupKey)) {
+        if (!acc[groupKey]) acc[groupKey] = [];
+        acc[groupKey].push(curr);
+      }
+      return acc;
+    }, {} as Record<string, Activity[]>);
+
+    // groupOrderに従ってソートして返す
     return Object.entries(grouped).sort(([a], [b]) => {
-      const idxA = groupOrder.indexOf(a);
-      const idxB = groupOrder.indexOf(b);
-      if (idxA !== -1 && idxB !== -1) return idxA - idxB;
-      if (idxA !== -1) return -1;
-      if (idxB !== -1) return 1;
-      return a.localeCompare(b, 'ja');
+      return groupOrder.indexOf(a) - groupOrder.indexOf(b);
     });
   }, [activities, isResearchPromotion]);
 
