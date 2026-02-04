@@ -1,6 +1,7 @@
+
 import React, { useState, useMemo } from 'react';
 import { HashRouter, Routes, Route, Link, useParams, useLocation } from 'react-router-dom';
-import { DEPARTMENTS, getFacultiesByDept, getFacultyActivity, RAW_DATA } from './data';
+import { DEPARTMENTS, ORGANIZATIONS, getFacultiesByDept, getFacultyActivity, RAW_DATA } from './data';
 import { Activity } from './types';
 
 // --- UI Components & Icons ---
@@ -18,6 +19,9 @@ const SearchIcon = () => (
 );
 const CopyIcon = () => (
   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 002-2h2a2 2 0 002-2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg>
+);
+const OrgIcon = () => (
+  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
 );
 
 // --- Layout Components ---
@@ -75,10 +79,10 @@ const Breadcrumbs = ({ paths }: { paths: { label: string; to?: string }[] }) => 
 };
 
 const SDGBadge = ({ sdgs }: { sdgs: string }) => {
-  if (!sdgs || sdgs === "―") return null;
-  const codes = sdgs.split(/[ ,;]+/).filter(Boolean);
+  if (!sdgs || sdgs === "―" || sdgs === "該当なし") return null;
+  const codes = sdgs.split(/[ ,;\n-]+/).filter(Boolean);
   return (
-    <div className="flex flex-wrap gap-1.5 mt-4">
+    <div className="flex flex-wrap gap-1.5">
       {codes.map(c => (
         <span key={c} className="px-2 py-0.5 bg-blue-900 text-white text-[9px] font-black rounded border border-blue-900">
           SDG {c}
@@ -99,21 +103,24 @@ const ActivityCard: React.FC<{ activity: Activity }> = ({ activity }) => (
           <span className="px-2 py-0.5 bg-gray-100 text-gray-500 text-[9px] font-black rounded uppercase tracking-tighter">
             {activity.type}
           </span>
-          <span className="text-[10px] text-gray-300 font-bold">#{activity.id}</span>
         </div>
         <h3 className="text-xl font-black text-gray-900 leading-tight">{activity.title}</h3>
-        {activity.eventName !== "―" && <p className="text-sm text-blue-600 font-bold mt-1">{activity.eventName}</p>}
+        {activity.eventName && activity.eventName !== "―" && <p className="text-sm text-blue-600 font-bold mt-1">{activity.eventName}</p>}
       </div>
     </div>
     
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      <div className="bg-gray-50/50 p-4 rounded-2xl border border-gray-50">
+        <label className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] block mb-1">役割</label>
+        <p className="text-xs text-gray-700 font-bold whitespace-pre-line">{activity.role || "―"}</p>
+      </div>
       <div className="bg-gray-50/50 p-4 rounded-2xl border border-gray-50">
         <label className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] block mb-1">開催・場所</label>
         <p className="text-xs text-gray-700 font-bold">{activity.date} / {activity.location}</p>
       </div>
       <div className="bg-gray-50/50 p-4 rounded-2xl border border-gray-50">
         <label className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] block mb-1">主催・対象</label>
-        <p className="text-xs text-gray-700 font-bold">{activity.organizer} / {activity.target}</p>
+        <p className="text-xs text-gray-700 font-bold whitespace-pre-line">{activity.organizer} / {activity.target}</p>
       </div>
     </div>
 
@@ -121,17 +128,21 @@ const ActivityCard: React.FC<{ activity: Activity }> = ({ activity }) => (
       <p className="text-sm text-gray-600 leading-relaxed whitespace-pre-wrap">{activity.summary}</p>
     </div>
 
-    <div className="flex flex-wrap items-center justify-between border-t border-gray-50 pt-5 gap-4">
-      <SDGBadge sdgs={activity.sdgs} />
-      {activity.url && (
-        <a 
-          href={activity.url} 
-          target="_blank" 
-          rel="noopener noreferrer"
-          className="text-xs font-black bg-gray-900 text-white px-5 py-2.5 rounded-full hover:bg-blue-600 transition-all flex items-center gap-2"
-        >
-          詳細サイトへ <ChevronRight />
-        </a>
+    <div className="flex flex-col sm:flex-row items-center justify-between border-t border-gray-50 pt-5 gap-4">
+      <div className="flex-1 flex justify-start">
+        <SDGBadge sdgs={activity.sdgs} />
+      </div>
+      {activity.url && activity.url !== "―" && activity.url !== "—" && (
+        <div className="w-full sm:w-auto flex justify-end">
+          <a 
+            href={activity.url.split('\n')[0].trim()} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="text-xs font-black bg-gray-900 text-white px-5 py-2.5 rounded-full hover:bg-blue-600 transition-all flex items-center gap-2 whitespace-nowrap"
+          >
+            詳細サイトへ <ChevronRight />
+          </a>
+        </div>
       )}
     </div>
   </div>
@@ -144,13 +155,21 @@ const Home = () => {
     if (query.trim().length < 2) return [];
     const q = query.toLowerCase();
     
-    const faculties = Array.from(new Set(RAW_DATA.map(d => d.facultyName)))
-      .filter(name => name.toLowerCase().includes(q))
+    const faculties = Array.from(new Set(RAW_DATA.filter(d => d.facultyName).map(d => d.facultyName)))
+      .filter(name => name && name.toLowerCase().includes(q))
       .map(name => ({ 
         type: 'faculty', 
         name, 
         dept: RAW_DATA.find(d => d.facultyName === name)?.department,
         id: `f-${name}`
+      }));
+
+    const orgs = ORGANIZATIONS
+      .filter(dept => dept.toLowerCase().includes(q))
+      .map(name => ({
+        type: 'organization',
+        name,
+        id: `o-${name}`
       }));
 
     const activities = RAW_DATA.filter(d => 
@@ -160,35 +179,34 @@ const Home = () => {
       type: 'activity',
       name: a.title,
       id: `a-${a.id}`,
-      faculty: a.facultyName
+      faculty: a.facultyName,
+      dept: a.department
     }));
 
-    return [...faculties, ...activities];
+    return [...faculties, ...orgs, ...activities];
   }, [query]);
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-12 sm:py-20 space-y-24">
-      {/* Hero Section */}
       <section className="text-center space-y-8">
         <div className="inline-block px-4 py-1.5 bg-blue-50 text-blue-700 text-[10px] font-black rounded-full uppercase tracking-[0.3em] mb-4">
           Toyo University Archive
         </div>
         <h1 className="text-5xl sm:text-7xl font-black text-gray-900 tracking-tighter leading-none">
-          2024年度 社会貢献活動<br /><span className="text-blue-900">DIRECTORY</span>
+          社会貢献活動<br /><span className="text-blue-900">DIRECTORY</span>
         </h1>
         <p className="text-base sm:text-lg text-gray-500 max-w-xl mx-auto font-bold leading-relaxed">
-          東洋大学の教員・事務局による<br className="hidden sm:block" />
-          社会貢献活動情報を公開しています。
+          東洋大学の教員および組織による地域連携、教育支援、<br className="hidden sm:block" />
+          国際協力などの活動実績を公開しています。
         </p>
 
-        {/* Improved Search Bar */}
         <div className="max-w-xl mx-auto mt-12 relative group">
           <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-gray-400 group-focus-within:text-blue-600 transition-colors">
             <SearchIcon />
           </div>
           <input 
             type="text"
-            placeholder="教員名、キーワードで検索..."
+            placeholder="教員、組織、キーワードで検索..."
             className="block w-full pl-14 pr-6 py-5 bg-white border-2 border-gray-100 rounded-[2rem] shadow-xl focus:ring-0 focus:border-blue-600 outline-none transition-all text-gray-800 font-bold placeholder:text-gray-300"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -201,18 +219,22 @@ const Home = () => {
                   searchResults.map((res: any) => (
                     <Link 
                       key={res.id}
-                      to={res.type === 'faculty' ? `/faculty/${encodeURIComponent(res.name)}` : `/faculty/${encodeURIComponent(res.faculty)}`}
+                      to={
+                        res.type === 'faculty' ? `/faculty/${encodeURIComponent(res.name)}` :
+                        res.type === 'organization' ? `/org/${encodeURIComponent(res.name)}` :
+                        res.faculty ? `/faculty/${encodeURIComponent(res.faculty)}` : `/org/${encodeURIComponent(res.dept)}`
+                      }
                       className="flex items-center justify-between p-4 hover:bg-blue-50/50 rounded-2xl transition-all group/item"
                       onClick={() => setQuery('')}
                     >
                       <div>
                         <span className="text-[9px] font-black text-blue-600 uppercase tracking-widest block mb-0.5">
-                          {res.type === 'faculty' ? '教員' : '活動内容'}
+                          {res.type === 'faculty' ? '教員' : res.type === 'organization' ? '組織' : '活動内容'}
                         </span>
                         <span className="text-sm font-black text-gray-800 group-hover/item:text-blue-900">
                           {res.name}
                         </span>
-                        {res.type === 'faculty' && <span className="text-[10px] text-gray-400 block font-bold">{res.dept}</span>}
+                        {res.dept && <span className="text-[10px] text-gray-400 block font-bold">{res.dept}</span>}
                       </div>
                       <ChevronRight />
                     </Link>
@@ -228,7 +250,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Navigation Cards */}
       <section className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <Link to="/list" className="group p-10 bg-white rounded-[3rem] border border-gray-100 shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-500 relative overflow-hidden">
           <div className="w-14 h-14 bg-blue-900 text-white rounded-2xl flex items-center justify-center mb-8 shadow-lg shadow-blue-900/20 group-hover:scale-110 transition-transform">
@@ -239,36 +260,42 @@ const Home = () => {
             <ChevronRight />
           </h2>
           <p className="text-gray-400 font-bold text-sm leading-relaxed mb-10">
-            学部・学科ごとに所属教員を一覧表示。各教員の専門性を活かした具体的な活動実績を閲覧できます。
+            学部・学科ごとに所属教員を一覧表示。専門性を活かした具体的な活動実績を閲覧できます。
           </p>
           <div className="flex items-baseline gap-2">
-            <span className="text-4xl font-black text-blue-900">{RAW_DATA.length}</span>
-            <span className="text-[10px] font-black text-gray-300 uppercase tracking-widest">Reports</span>
+            <span className="text-4xl font-black text-blue-900">{Array.from(new Set(RAW_DATA.filter(d => d.facultyName).map(d => d.facultyName))).length}</span>
+            <span className="text-[10px] font-black text-gray-300 uppercase tracking-widest">Members</span>
           </div>
           <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-blue-50 rounded-full opacity-50 group-hover:scale-150 transition-transform duration-1000"></div>
         </Link>
 
-        <div className="p-10 bg-gray-100/50 rounded-[3rem] border-2 border-dashed border-gray-200 flex flex-col justify-center opacity-60">
-          <div className="w-14 h-14 bg-gray-200 text-gray-400 rounded-2xl flex items-center justify-center mb-8">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
+        <Link to="/org" className="group p-10 bg-white rounded-[3rem] border border-gray-100 shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-500 relative overflow-hidden">
+          <div className="w-14 h-14 bg-blue-900 text-white rounded-2xl flex items-center justify-center mb-8 shadow-lg shadow-blue-900/20 group-hover:scale-110 transition-transform">
+            <OrgIcon />
           </div>
-          <h2 className="text-3xl font-black text-gray-400 mb-4 tracking-tighter">組織・プロジェクト別</h2>
-          <p className="text-gray-400 font-bold text-sm">
-            研究所や学部単位でのプロジェクトについては現在データメンテナンス中です。
+          <h2 className="text-3xl font-black text-gray-900 mb-4 flex items-center gap-3">
+            組織・プロジェクト別
+            <ChevronRight />
+          </h2>
+          <p className="text-gray-400 font-bold text-sm leading-relaxed mb-10">
+            研究所、センター、事務局単位での活動。組織的な社会貢献プロジェクトを紹介します。
+          </p>
+          <div className="flex items-baseline gap-2">
+            <span className="text-4xl font-black text-blue-900">{ORGANIZATIONS.length}</span>
+            <span className="text-[10px] font-black text-gray-300 uppercase tracking-widest">Entities</span>
+          </div>
+          <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-blue-50 rounded-full opacity-50 group-hover:scale-150 transition-transform duration-1000"></div>
+        </Link>
+      </section>
+
+      <section className="bg-white rounded-[3rem] sm:rounded-[4rem] p-10 sm:p-20 text-gray-900 border border-gray-100 shadow-sm relative overflow-hidden text-center">
+        <div className="relative z-10 space-y-4 sm:space-y-6 flex flex-col items-center">
+          <h2 className="text-2xl sm:text-4xl font-black italic tracking-tighter w-full text-blue-900">"Philosophy as the Foundation of all Studies"</h2>
+          <p className="text-gray-500 font-bold text-[9px] min-[400px]:text-[11px] sm:text-sm md:text-base whitespace-nowrap leading-tight w-full max-w-full px-2">
+            「諸学の基礎は哲学にあり」 東洋大学は、教育・研究の成果を社会に還元し、貢献し続けます。
           </p>
         </div>
       </section>
-
-      {/* Footer Banner */}
-      <section className="bg-blue-900 rounded-[3rem] sm:rounded-[4rem] p-10 sm:p-20 text-white shadow-2xl relative overflow-hidden text-center">
-        <div className="relative z-10 space-y-4 sm:space-y-6 flex flex-col items-center">
-          <h2 className="text-2xl sm:text-4xl font-black italic tracking-tighter w-full">"Philosophy as the Foundation of all Studies"</h2>
-          <p className="text-blue-100/90 font-bold text-[9px] min-[400px]:text-[11px] sm:text-sm md:text-base whitespace-nowrap leading-tight w-full max-w-full px-2">
-      「諸学の基礎は哲学にあり」 東洋大学は、教育・研究の成果を社会に還元し、より良い未来の創造に貢献し続けます。
-    </p>
-  </div>
-  <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.1),transparent)] pointer-events-none"></div>
-</section>
     </div>
   );
 };
@@ -286,6 +313,32 @@ const DepartmentList = () => (
         >
           <span className="text-lg font-black text-gray-700 group-hover:text-blue-900 transition-colors">
             {dept}
+          </span>
+          <div className="w-10 h-10 rounded-full flex items-center justify-center bg-gray-50 text-gray-300 group-hover:bg-blue-600 group-hover:text-white transition-all">
+            <ChevronRight />
+          </div>
+        </Link>
+      ))}
+    </div>
+  </div>
+);
+
+const OrganizationList = () => (
+  <div className="max-w-4xl mx-auto px-4 py-12">
+    <Breadcrumbs paths={[{ label: '組織一覧' }]} />
+    <div className="mb-12">
+      <h2 className="text-4xl font-black text-gray-900 tracking-tighter">学部・研究所・事務局</h2>
+      <p className="text-[10px] font-black text-blue-600 mt-2 uppercase tracking-[0.4em]">Administrative Units & Research Centers</p>
+    </div>
+    <div className="grid gap-3">
+      {ORGANIZATIONS.map(org => (
+        <Link 
+          key={org} 
+          to={`/org/${encodeURIComponent(org)}`}
+          className="flex items-center justify-between p-6 bg-white rounded-3xl border-2 border-gray-50 shadow-sm hover:border-blue-600 hover:bg-blue-50/30 transition-all group"
+        >
+          <span className="text-lg font-black text-gray-700 group-hover:text-blue-900 transition-colors">
+            {org}
           </span>
           <div className="w-10 h-10 rounded-full flex items-center justify-center bg-gray-50 text-gray-300 group-hover:bg-blue-600 group-hover:text-white transition-all">
             <ChevronRight />
@@ -327,9 +380,7 @@ const FacultyListPage = () => {
                 </span>
               </div>
             </div>
-            <div className="text-gray-200 group-hover:text-blue-600 transition-colors">
-              <ChevronRight />
-            </div>
+            <ChevronRight />
           </Link>
         ))}
       </div>
@@ -353,27 +404,182 @@ const FacultyDetail = () => {
       ]} />
 
       <header className="mb-12 bg-white border border-gray-100 p-10 sm:p-16 rounded-[3rem] sm:rounded-[4rem] relative overflow-hidden shadow-sm">
-  <div className="relative z-10 flex flex-col sm:flex-row sm:items-end justify-between gap-8 sm:gap-10">
-    <div className="space-y-3 sm:space-y-4">
+        <div className="relative z-10 flex flex-col sm:flex-row sm:items-end justify-between gap-8 sm:gap-10">
+          <div className="space-y-3 sm:space-y-4">
             <span className="inline-block px-4 py-1 bg-blue-900 text-white text-[11px] font-bold rounded-lg uppercase tracking-wider shadow-sm">
-        {profile.department}
-      </span>
-      <h1 className="text-5xl sm:text-7xl font-black tracking-tighter leading-none text-gray-900">{profile.name}</h1>
-    </div>
+              {profile.department}
+            </span>
+            <h1 className="text-5xl sm:text-7xl font-black tracking-tighter leading-none text-gray-900">{profile.name}</h1>
+          </div>
           <div className="text-center sm:text-right pr-4">
             <div className="text-3xl sm:text-4xl font-bold text-gray-500 leading-none mb-1 italic">
-        {profile.activities.length}
-      </div>
-      <div className="text-[9px] font-black uppercase tracking-[0.3em] text-gray-500">Reports</div>
-    </div>
-  </div>
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-600/20 rounded-full blur-[120px] -mr-40 -mt-40"></div>
+              {profile.activities.length}
+            </div>
+            <div className="text-[9px] font-black uppercase tracking-[0.3em] text-gray-500">Reports</div>
+          </div>
+        </div>
+        <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-blue-50/10 rounded-full blur-[100px] -mr-20 -mt-20"></div>
       </header>
 
       <div className="space-y-10">
         {profile.activities.map(activity => (
           <ActivityCard key={activity.id} activity={activity} />
         ))}
+      </div>
+    </div>
+  );
+};
+
+const OrganizationDetail = () => {
+  const { name } = useParams<{ name: string }>();
+  const decodedName = decodeURIComponent(name || '');
+  const activities = RAW_DATA.filter(d => d.department === decodedName);
+
+  // 研究推進課のためのサブカテゴリ分類ロジック
+  const isResearchPromotion = decodedName === '研究推進課';
+  
+  // 選択中のサブグループを管理するステート
+  const [selectedSubGroup, setSelectedSubGroup] = useState<string | null>(null);
+
+  const groupedActivities = useMemo(() => {
+    if (!isResearchPromotion) return null;
+    
+    const grouped = activities.reduce((acc, curr) => {
+      let groupKey = "その他";
+      const org = curr.organizer;
+      
+      if (org.includes("人間科学総合研究所")) groupKey = "人間科学総合研究所";
+      else if (org.includes("現代社会総合研究所")) groupKey = "現代社会総合研究所";
+      else if (org.includes("東洋学研究所")) groupKey = "東洋学研究所";
+      else if (org.includes("アジア文化研究所")) groupKey = "アジア文化研究所";
+      else if (org.includes("地域活性化研究所")) groupKey = "地域活性化研究所";
+      else if (org.includes("工業技術研究所")) groupKey = "工業技術研究所";
+      else if (org.includes("ライフイノベーション研究所")) groupKey = "ライフイノベーション研究所";
+      else if (org.includes("バイオ・ナノエレクトロニクス研究センター")) groupKey = "バイオ・ナノエレクトロニクス研究センター";
+      else if (org.includes("アジアPPP 研究所") || org.includes("アジアPPP研究所")) groupKey = "アジアPPP 研究所";
+      else if (org.includes("グローバル・イノベーション学研究センター") || org.includes("グローバル・イノベーション学研究センター")) groupKey = "グローバル・イノベーション学研究センター";
+      else if (org.includes("生体医工学研究センター")) groupKey = "生体医工学研究センター";
+      else if (org.includes("PPP研究センター") || org.includes("PPP 研究センター")) groupKey = "PPP研究センター";
+      else if (org.includes("国際共生社会研究センター")) groupKey = "国際共生社会研究センター";
+      else if (org.includes("福祉社会開発研究センター")) groupKey = "福祉社会開発研究センター";
+      else if (org.includes("バイオレジリエンス研究プロジェクト") || org.includes("BRRP")) groupKey = "バイオレジリエンス研究プロジェクト（BRRP）";
+      else groupKey = org.split(/[（(【]/)[0].trim() || "その他";
+
+      if (!acc[groupKey]) acc[groupKey] = [];
+      acc[groupKey].push(curr);
+      return acc;
+    }, {} as Record<string, Activity[]>);
+
+    const groupOrder = [
+      "人間科学総合研究所", "現代社会総合研究所", "東洋学研究所", "アジア文化研究所",
+      "地域活性化研究所", "工業技術研究所", "ライフイノベーション研究所", 
+      "バイオ・ナノエレクトロニクス研究センター", "アジアPPP 研究所", 
+      "グローバル・イノベーション学研究センター", "生体医工学研究センター", 
+      "PPP研究センター", "国際共生社会研究センター", "福祉社会開発研究センター", 
+      "バイオレジリエンス研究プロジェクト（BRRP）"
+    ];
+
+    return Object.entries(grouped).sort(([a], [b]) => {
+      const idxA = groupOrder.indexOf(a);
+      const idxB = groupOrder.indexOf(b);
+      if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+      if (idxA !== -1) return -1;
+      if (idxB !== -1) return 1;
+      return a.localeCompare(b, 'ja');
+    });
+  }, [activities, isResearchPromotion]);
+
+  if (activities.length === 0) return <div className="p-24 text-center font-black text-gray-300 italic uppercase tracking-widest">Organization Data Not Found</div>;
+
+  return (
+    <div className="max-w-4xl mx-auto px-4 py-12">
+      <Breadcrumbs paths={[
+        { label: '組織一覧', to: '/org' },
+        { label: decodedName }
+      ]} />
+
+      <header className="mb-12 bg-white border border-gray-100 p-10 sm:p-16 rounded-[3rem] sm:rounded-[4rem] relative overflow-hidden shadow-sm">
+        <div className="relative z-10 flex flex-col sm:flex-row sm:items-end justify-between gap-8 sm:gap-10">
+          <div className="space-y-3 sm:space-y-4">
+            <span className="inline-block px-4 py-1 bg-blue-900 text-white text-[11px] font-bold rounded-lg uppercase tracking-wider shadow-sm">
+              Organization / Office
+            </span>
+            <h1 className="text-4xl sm:text-6xl font-black tracking-tighter leading-tight text-gray-900">{decodedName}</h1>
+          </div>
+          <div className="text-center sm:text-right pr-4">
+            <div className="text-3xl sm:text-4xl font-bold text-gray-500 leading-none mb-1 italic">
+              {activities.length}
+            </div>
+            <div className="text-[9px] font-black uppercase tracking-[0.3em] text-gray-500">Activities</div>
+          </div>
+        </div>
+      </header>
+
+      {/* 研究推進課の場合のクイックナビゲーション（リンクボタン） */}
+      {isResearchPromotion && groupedActivities && (
+        <section className="mb-16 animate-in fade-in slide-in-from-top-4 duration-700">
+          <div className="flex items-center gap-4 mb-8">
+            <div className="h-px flex-1 bg-gray-200"></div>
+            <h2 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em]">Select Unit</h2>
+            <div className="h-px flex-1 bg-gray-200"></div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            <button
+              onClick={() => setSelectedSubGroup(null)}
+              className={`p-4 rounded-2xl border-2 text-left transition-all font-black text-xs shadow-sm flex items-center justify-between group ${
+                selectedSubGroup === null 
+                ? 'border-blue-900 bg-blue-900 text-white' 
+                : 'border-gray-50 bg-white text-gray-700 hover:border-blue-200 hover:bg-gray-50'
+              }`}
+            >
+              すべて表示
+              <ChevronRight />
+            </button>
+            {groupedActivities.map(([group]) => (
+              <button
+                key={group}
+                onClick={() => setSelectedSubGroup(group)}
+                className={`p-4 rounded-2xl border-2 text-left transition-all font-black text-xs shadow-sm flex items-center justify-between group ${
+                  selectedSubGroup === group 
+                  ? 'border-blue-900 bg-blue-900 text-white' 
+                  : 'border-gray-50 bg-white text-gray-700 hover:border-blue-200 hover:bg-gray-50'
+                }`}
+              >
+                {group}
+                <ChevronRight />
+              </button>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <div className="space-y-20">
+        {isResearchPromotion && groupedActivities ? (
+          groupedActivities
+            .filter(([group]) => !selectedSubGroup || group === selectedSubGroup)
+            .map(([group, list]) => (
+              <div key={group} className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div className="flex items-center gap-4">
+                  <h2 className="text-sm font-black text-blue-900 uppercase tracking-widest bg-blue-50 px-6 py-3 rounded-full border border-blue-100 shadow-sm flex items-center gap-3">
+                    <span className="w-2 h-2 bg-blue-900 rounded-full"></span>
+                    {group}
+                  </h2>
+                  <div className="h-px flex-1 bg-gray-100"></div>
+                </div>
+                <div className="space-y-10">
+                  {list.map(activity => (
+                    <ActivityCard key={activity.id} activity={activity} />
+                  ))}
+                </div>
+              </div>
+            ))
+        ) : (
+          <div className="space-y-10">
+            {activities.map(activity => (
+              <ActivityCard key={activity.id} activity={activity} />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -397,16 +603,18 @@ const App = () => {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/list" element={<DepartmentList />} />
+            <Route path="/org" element={<OrganizationList />} />
             <Route path="/dept/:deptName" element={<FacultyListPage />} />
             <Route path="/faculty/:name" element={<FacultyDetail />} />
+            <Route path="/org/:name" element={<OrganizationDetail />} />
           </Routes>
         </main>
         <footer className="bg-white border-t border-gray-100 py-24 sm:py-32">
           <div className="max-w-7xl mx-auto px-4 text-center space-y-8">
             <div className="w-12 h-1 bg-gray-100 mx-auto rounded-full"></div>
-            <p className="text-gray-400 text-[10px] font-black uppercase tracking-[0.5em]">© 2025 Toyo University</p>
+            <p className="text-gray-400 text-[10px] font-black uppercase tracking-[0.5em]">© 2025 Toyo University Archive</p>
             <div className="max-w-2xl mx-auto text-gray-300 text-[11px] font-bold leading-relaxed px-6">
-              本サイトは、2024年度の東洋大学教員による社会貢献活動の実績をとりまとめたディレクトリです。<br />
+              本サイトは、2024年度の東洋大学の教員および組織による社会貢献活動の実績をとりまとめたディレクトリです。
             </div>
           </div>
         </footer>
