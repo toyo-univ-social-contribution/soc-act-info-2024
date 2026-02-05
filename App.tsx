@@ -1,6 +1,6 @@
 
 import React, { useState, useMemo } from 'react';
-import { HashRouter, Routes, Route, Link, useParams, useLocation } from 'react-router-dom';
+import { HashRouter, Routes, Route, Link, useParams, useLocation, useNavigate } from 'react-router-dom';
 import { DEPARTMENTS, ORGANIZATIONS, getFacultiesByDept, getFacultyActivity, RAW_DATA, NAME_MAPPING } from './data';
 import { Activity } from './types';
 
@@ -194,16 +194,10 @@ const Home = () => {
   return (
     <div className="max-w-5xl mx-auto px-4 py-12 sm:py-20 space-y-24">
       <section className="text-center space-y-8">
-        <div className="inline-block px-4 py-1.5 bg-blue-50 text-blue-700 text-[10px] font-black rounded-full uppercase tracking-[0.3em] mb-4">
-          Toyo University Archive
-        </div>
         <h1 className="text-5xl sm:text-7xl font-black text-gray-900 tracking-tighter leading-none">
-          社会貢献活動<br /><span className="text-blue-900">DIRECTORY</span>
+          <span className="text-2xl sm:text-4xl block text-blue-900/30 mb-2 tracking-tight">2024年度</span>
+          社会貢献活動<br /><span className="text-blue-900">ARCHIVES</span>
         </h1>
-        <p className="text-base sm:text-lg text-gray-500 max-w-xl mx-auto font-bold leading-relaxed">
-          東洋大学の教員および組織による地域連携、教育支援、<br className="hidden sm:block" />
-          国際協力などの活動実績を公開しています。
-        </p>
 
         <div className="max-w-xl mx-auto mt-12 relative group">
           <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-gray-400 group-focus-within:text-blue-600 transition-colors">
@@ -448,20 +442,19 @@ const FacultyDetail = () => {
 };
 
 const OrganizationDetail = () => {
-  const { name } = useParams<{ name: string }>();
+  const { name, subName } = useParams<{ name: string; subName?: string }>();
   const decodedName = decodeURIComponent(name || '');
-  const activities = RAW_DATA.filter(d => d.department === decodedName);
-
-  // 研究推進課のためのサブカテゴリ分類ロジック
-  const isResearchPromotion = decodedName === '研究推進課';
+  const decodedSubName = subName ? decodeURIComponent(subName) : null;
   
-  // 選択中のサブグループを管理するステート
-  const [selectedSubGroup, setSelectedSubGroup] = useState<string | null>(null);
+  const activities = useMemo(() => {
+    return RAW_DATA.filter(d => d.department === decodedName);
+  }, [decodedName]);
+
+  const isResearchPromotion = decodedName === '研究推進課';
 
   const groupedActivities = useMemo(() => {
     if (!isResearchPromotion) return null;
     
-    // 正式な15組織の並び順と名称
     const groupOrder = [
       "人間科学総合研究所", "現代社会総合研究所", "東洋学研究所", "アジア文化研究所",
       "地域活性化研究所", "工業技術研究所", "ライフイノベーション研究所", 
@@ -475,8 +468,6 @@ const OrganizationDetail = () => {
       let groupKey = "";
       const org = curr.organizer;
       
-      // マッピングロジック（特定の主催者名を親組織に集約）
-      // NOTE: ID 51のように複数の研究所名が含まれる場合、優先度の高い組織を先に判定する
       if (org.includes("東洋学研究所")) groupKey = "東洋学研究所";
       else if (org.includes("人間科学総合研究所")) groupKey = "人間科学総合研究所";
       else if (org.includes("現代社会総合研究所")) groupKey = "現代社会総合研究所";
@@ -493,7 +484,6 @@ const OrganizationDetail = () => {
       else if (org.includes("福祉社会開発研究センター") || org.includes(" CDWS ")) groupKey = "福祉社会開発研究センター";
       else if (org.includes("バイオレジリエンス") || org.includes("BRRP") || org.includes("KISTEC") || org.includes("かわさきサイエンス")) groupKey = "バイオレジリエンス研究プロジェクト（BRRP）";
 
-      // groupOrderに含まれる正規の名称のみを採用
       if (groupKey && groupOrder.includes(groupKey)) {
         if (!acc[groupKey]) acc[groupKey] = [];
         acc[groupKey].push(curr);
@@ -501,7 +491,6 @@ const OrganizationDetail = () => {
       return acc;
     }, {} as Record<string, Activity[]>);
 
-    // groupOrderに従ってソートして返す
     return Object.entries(grouped).sort(([a], [b]) => {
       return groupOrder.indexOf(a) - groupOrder.indexOf(b);
     });
@@ -509,111 +498,100 @@ const OrganizationDetail = () => {
 
   if (activities.length === 0) return <div className="p-24 text-center font-black text-gray-300 italic uppercase tracking-widest">Organization Data Not Found</div>;
 
+  // パンくずリストの構築
+  const breadcrumbPaths: { label: string; to?: string }[] = [
+    { label: '組織一覧', to: '/org' },
+    { label: decodedName, to: decodedSubName ? `/org/${encodeURIComponent(decodedName)}` : undefined }
+  ];
+  if (decodedSubName) {
+    breadcrumbPaths.push({ label: decodedSubName });
+  }
+
   return (
     <div className="max-w-4xl mx-auto px-4 py-12">
-      <Breadcrumbs paths={[
-        { label: '組織一覧', to: '/org' },
-        { label: decodedName }
-      ]} />
+      <Breadcrumbs paths={breadcrumbPaths} />
 
       <header className="mb-12 bg-white border border-gray-100 p-10 sm:p-16 rounded-[3rem] sm:rounded-[4rem] relative overflow-hidden shadow-sm">
         <div className="relative z-10 flex flex-col sm:flex-row sm:items-end justify-between gap-8 sm:gap-10">
           <div className="space-y-3 sm:space-y-4">
             <span className="inline-block px-4 py-1 bg-blue-900 text-white text-[11px] font-bold rounded-lg uppercase tracking-wider shadow-sm">
-              {NAME_MAPPING[decodedName] || 'Organization / Office'}
+              {decodedSubName ? decodedName : (NAME_MAPPING[decodedName] || 'Organization')}
             </span>
             <h1 className="text-4xl sm:text-6xl font-black tracking-tighter leading-tight text-gray-900">
-              {decodedName}
+              {decodedSubName || decodedName}
             </h1>
+            {decodedSubName && (
+              <p className="text-[10px] font-black text-blue-600 uppercase tracking-[0.4em] italic">
+                {NAME_MAPPING[decodedSubName]}
+              </p>
+            )}
           </div>
           <div className="text-center sm:text-right pr-4">
             <div className="text-3xl sm:text-4xl font-bold text-gray-500 leading-none mb-1 italic">
-              {activities.length}
+              {decodedSubName ? (groupedActivities?.find(([g]) => g === decodedSubName)?.[1].length || 0) : activities.length}
             </div>
             <div className="text-[9px] font-black uppercase tracking-[0.3em] text-gray-500">Activities</div>
           </div>
         </div>
       </header>
 
-      {/* 研究推進課の場合のクイックナビゲーション（リンクボタン） */}
-      {isResearchPromotion && groupedActivities && (
-        <section className="mb-16 animate-in fade-in slide-in-from-top-4 duration-700">
-          <div className="flex items-center gap-4 mb-8">
+      {/* 研究推進課のトップページ（サブ組織の選択画面） */}
+      {isResearchPromotion && !decodedSubName && groupedActivities && (
+        <section className="animate-in fade-in slide-in-from-top-4 duration-700">
+          <div className="flex items-center gap-4 mb-10">
             <div className="h-px flex-1 bg-gray-200"></div>
-            <h2 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em]">Select Unit</h2>
+            <h2 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em]">研究所・センターを選択</h2>
             <div className="h-px flex-1 bg-gray-200"></div>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            <button
-              onClick={() => setSelectedSubGroup(null)}
-              className={`p-4 rounded-2xl border-2 text-left transition-all font-black text-xs shadow-sm flex items-center justify-between group ${
-                selectedSubGroup === null 
-                ? 'border-blue-900 bg-blue-900 text-white' 
-                : 'border-gray-50 bg-white text-gray-700 hover:border-blue-200 hover:bg-gray-50'
-              }`}
-            >
-              <div>
-                <span>すべて表示</span>
-                <span className="block text-[8px] opacity-60 font-bold italic">All Units</span>
-              </div>
-              <ChevronRight />
-            </button>
-            {groupedActivities.map(([group]) => (
-              <button
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {groupedActivities.map(([group, list]) => (
+              <Link
                 key={group}
-                onClick={() => setSelectedSubGroup(group)}
-                className={`p-4 rounded-2xl border-2 text-left transition-all font-black text-xs shadow-sm flex items-center justify-between group ${
-                  selectedSubGroup === group 
-                  ? 'border-blue-900 bg-blue-900 text-white' 
-                  : 'border-gray-50 bg-white text-gray-700 hover:border-blue-200 hover:bg-gray-50'
-                }`}
+                to={`/org/${encodeURIComponent(decodedName)}/${encodeURIComponent(group)}`}
+                className="p-8 bg-white rounded-[2rem] border-2 border-gray-50 shadow-sm hover:border-blue-900 hover:shadow-xl hover:-translate-y-1 transition-all group flex flex-col justify-between"
               >
                 <div>
-                  <span>{group}</span>
-                  <span className="block text-[8px] opacity-60 font-bold italic leading-tight mt-0.5">
-                    {NAME_MAPPING[group] || 'Research Unit'}
-                  </span>
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="w-10 h-10 bg-blue-50 text-blue-900 font-black text-sm rounded-xl flex items-center justify-center group-hover:bg-blue-900 group-hover:text-white transition-colors">
+                      {group[0]}
+                    </div>
+                    <span className="text-[10px] font-black text-gray-300 italic uppercase">{list.length} items</span>
+                  </div>
+                  <h3 className="text-lg font-black text-gray-800 group-hover:text-blue-900 transition-colors mb-1 leading-tight">
+                    {group}
+                  </h3>
+                  <p className="text-[9px] text-gray-400 font-bold uppercase tracking-wider mb-6">
+                    {NAME_MAPPING[group]}
+                  </p>
                 </div>
-                <ChevronRight />
-              </button>
+                <div className="flex items-center gap-2 text-xs font-black text-blue-600 opacity-0 group-hover:opacity-100 transition-all translate-x-[-10px] group-hover:translate-x-0">
+                  詳細を見る <ChevronRight />
+                </div>
+              </Link>
             ))}
           </div>
         </section>
       )}
 
-      <div className="space-y-20">
-        {isResearchPromotion && groupedActivities ? (
-          groupedActivities
-            .filter(([group]) => !selectedSubGroup || group === selectedSubGroup)
-            .map(([group, list]) => (
-              <div key={group} className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center gap-4">
-                    <h2 className="text-sm font-black text-blue-900 uppercase tracking-widest bg-blue-50 px-6 py-3 rounded-full border border-blue-100 shadow-sm flex items-center gap-3">
-                      <span className="w-2 h-2 bg-blue-900 rounded-full"></span>
-                      {group}
-                    </h2>
-                    <div className="h-px flex-1 bg-gray-100"></div>
-                  </div>
-                  <p className="text-[10px] font-black text-gray-400 italic ml-6 uppercase tracking-widest">
-                    {NAME_MAPPING[group]}
-                  </p>
-                </div>
-                <div className="space-y-10">
-                  {list.map(activity => (
-                    <ActivityCard key={activity.id} activity={activity} />
-                  ))}
-                </div>
-              </div>
-            ))
-        ) : (
-          <div className="space-y-10">
-            {activities.map(activity => (
-              <ActivityCard key={activity.id} activity={activity} />
-            ))}
-          </div>
-        )}
-      </div>
+      {/* 研究所個別ページ、または通常の組織ページ */}
+      {(!isResearchPromotion || decodedSubName) && (
+        <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          {(isResearchPromotion && decodedSubName ? (groupedActivities?.find(([g]) => g === decodedSubName)?.[1] || []) : activities).map(activity => (
+            <ActivityCard key={activity.id} activity={activity} />
+          ))}
+          
+          {isResearchPromotion && (
+            <div className="pt-12 text-center">
+              <Link 
+                to={`/org/${encodeURIComponent(decodedName)}`}
+                className="inline-flex items-center gap-2 text-xs font-black text-gray-400 hover:text-blue-900 transition-colors py-4 px-8 border border-gray-100 rounded-full hover:bg-gray-50"
+              >
+                ← 組織一覧へ戻る
+              </Link>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };
@@ -640,14 +618,15 @@ const App = () => {
             <Route path="/dept/:deptName" element={<FacultyListPage />} />
             <Route path="/faculty/:name" element={<FacultyDetail />} />
             <Route path="/org/:name" element={<OrganizationDetail />} />
+            <Route path="/org/:name/:subName" element={<OrganizationDetail />} />
           </Routes>
         </main>
         <footer className="bg-white border-t border-gray-100 py-24 sm:py-32">
           <div className="max-w-7xl mx-auto px-4 text-center space-y-8">
             <div className="w-12 h-1 bg-gray-100 mx-auto rounded-full"></div>
-            <p className="text-gray-400 text-[10px] font-black uppercase tracking-[0.5em]">© 2025 Toyo University Archive</p>
+            <p className="text-gray-400 text-[10px] font-black uppercase tracking-[0.5em]">© 2025 Toyo University Archives</p>
             <div className="max-w-2xl mx-auto text-gray-300 text-[11px] font-bold leading-relaxed px-6">
-              本サイトは、2024年度の東洋大学の教員および組織による社会貢献活動の実績をとりまとめたディレクトリです。
+              本サイトは、2024年度の東洋大学の教員および組織による社会貢献活動の実績をとりまとめたアーカイブです。
             </div>
           </div>
         </footer>
