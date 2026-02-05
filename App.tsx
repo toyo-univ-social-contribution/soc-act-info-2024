@@ -468,12 +468,14 @@ const OrganizationDetail = () => {
       let groupKey = "";
       const org = curr.organizer;
       
-      if (org.includes("東洋学研究所")) groupKey = "東洋学研究所";
+      // 注意: ID:64 のように「後援」に他研究所が含まれる場合があるため、
+      // 所属研究所（工業技術研究所など）の判定優先度を上げる
+      if (org.includes("工業技術研究所") || org.includes("TSO International")) groupKey = "工業技術研究所";
+      else if (org.includes("東洋学研究所")) groupKey = "東洋学研究所";
       else if (org.includes("人間科学総合研究所")) groupKey = "人間科学総合研究所";
       else if (org.includes("現代社会総合研究所")) groupKey = "現代社会総合研究所";
       else if (org.includes("アジア文化研究所")) groupKey = "アジア文化研究所";
       else if (org.includes("地域活性化研究所")) groupKey = "地域活性化研究所";
-      else if (org.includes("工業技術研究所") || org.includes("TSO International")) groupKey = "工業技術研究所";
       else if (org.includes("ライフイノベーション研究所")) groupKey = "ライフイノベーション研究所";
       else if (org.includes("バイオ・ナノエレクトロニクス研究センター") || org.includes("BNC")) groupKey = "バイオ・ナノエレクトロニクス研究センター";
       else if (org.includes("アジアPPP 研究所") || org.includes("アジアPPP研究所") || org.includes("Asian Development Bank")) groupKey = "アジアPPP 研究所";

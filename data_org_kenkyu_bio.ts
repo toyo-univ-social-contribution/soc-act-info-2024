@@ -13,7 +13,7 @@ export const KENKYU_BIO_DATA: Activity[] = [
     date: "6/8",
     location: "かながわサイエンスパーク",
     target: "小学生",
-    summary: "身近な苔の中に潜むクマムシをスマホ顕微鏡で観察。子供たちの理科への意識変容を調査するアウトリーチ活動。伊藤プロジェクトリーダーが講師として参加。",
+    summary: "身近な苔の中に潜むクマムシをスマホ顕微鏡で観察。子供たちの理科への意識変容を調査するアウトリーチ活動. 伊藤プロジェクトリーダーが講師として参加。",
     url: "https://toyobioresilience.jp/blog/2024-06-08.html",
     sdgs: "4"
   },
@@ -32,22 +32,6 @@ export const KENKYU_BIO_DATA: Activity[] = [
     summary: "朝霞キャンパス移転後の新環境にて、福士東京大教授らを招いた基調講演や成果報告を実施。第2期プロジェクトの方向性を広く発信。",
     url: "https://toyobioresilience.jp/blog/2024-07-08.html",
     sdgs: "4, 9"
-  },
-  {
-    id: 111,
-    facultyName: "",
-    department: "研究推進課",
-    title: "国際発酵・醸造食品産業展 講演",
-    role: "講師",
-    type: "講演会",
-    organizer: "TSO International（管轄：バイオレジリエンス研究プロジェクト（BRRP））",
-    eventName: "キャンパス内酵母による日本酒開発成果発表",
-    date: "7/30-8/1",
-    location: "東京ビッグサイト",
-    target: "企業, 研究者, 一般",
-    summary: "学内に自生する花から分離した酵母で醸造した日本酒「越生梅林エスティ」について、開発秘話と地域ブランド化の取り組みを講演。峯岸先生が登壇。",
-    url: "https://toyobioresilience.jp/blog/2024-07-302.html",
-    sdgs: "9"
   },
   {
     id: 112,
@@ -93,7 +77,7 @@ export const KENKYU_BIO_DATA: Activity[] = [
     date: "11/26",
     location: "東京ビッグサイト",
     target: "企業, 行政機関, 一般",
-    summary: "峯岸研究室・伊藤研究室・高品研究室の成果をポスター展示。多くの来場企業と新たな共同研究の可能性について具体的な意見交換を実施。",
+    summary: "峯岸研究室・伊藤研究室・高品研究室の成果をポスター展示. 多くの来場企業と新たな共同研究の可能性について具体的な意見交換を実施。",
     url: "https://toyobioresilience.jp/blog/2024-11-28.html",
     sdgs: "9"
   },
