@@ -1,3 +1,4 @@
+
 import { Activity } from './types';
 
 export const SOCIOLOGY_DATA: Activity[] = [
@@ -30,7 +31,7 @@ export const SOCIOLOGY_DATA: Activity[] = [
     location: "京華通り自治会・春日町三丁目町会・白山前町町会・白山神社境内",
     target: "社会人・一般, 市民団体",
     summary: "白山神社例大祭に合わせて、氏子地域の各町会では神輿渡御や催しが行われる。白山神社境内では盆踊りも開催される。今年度は3町会および盆踊りについて、社会学科の「社会調査および実習」金澤良太クラスの受講生や「社会学演習Ⅱ・Ⅲ」西野淑美ゼミ生、そのほか参加を希望した学生(社会学部の他学科含む)計21名が、準備や当日の手伝いに参加した。",
-    url: "https://sites.google.com/toyo.jp/soc-news-151/news%E4%B8%80%E8%A6%A7%E7%A4%BE%E4%BC%9A%E5%AD%A6%E7%A7%91/20240921_%E6%9D%B1%E6%B4%8B%E5%A4%A7%E5%AD%A6%E7%A4%BE%E4%BC%9A%E5%AD%A6%E9%83%A8%E3%81%AE%E5%AD%A6%E7%94%9F%E3%81%8C%E7%99%BD%E5%B1%B1%E7%A5%9E%E7%A4%BE%E4%BE%8B%E5%A4%A7%E7%A5%AD%E3%81%AB%E5%8F%82%E5%8A%A0%E3%81%97%E3%81%BE%E3%81%97%E3%81%9F",
+    url: "https://sites.google.com/toyo.jp/soc-news-151/news%E4%B8%80%E8%A6%A7%E7%A4%BE%E4%BC%9A%E5%AD%A6%E7%A7%91/20240921_%E6%9D%B1%E6%B4%8B%E5%A4%A7%E5%AD%A6%E7%A4%BE%E4%BC%9A%E5%AD%A6%E9%83%A8%E3%81%AE%E5%AD%A6%E7%94%9F%E3%81%8C%E7%99%BD%E5%B1%B1%E7%A5%9E%E7%A4%BE%E4%BE%8B%E5%A4%A7%E7%A5%AD%E3%81%AB%E5%8F%82%E5%8A%A0%E3%81%97%E3%81%BE%E3%81%97%E3%81%9F?authuser=0",
     sdgs: "11"
   }
 ];

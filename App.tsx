@@ -1,7 +1,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { HashRouter, Routes, Route, Link, useParams, useLocation } from 'react-router-dom';
-import { DEPARTMENTS, ORGANIZATIONS, getFacultiesByDept, getFacultyActivity, RAW_DATA } from './data';
+import { DEPARTMENTS, ORGANIZATIONS, getFacultiesByDept, getFacultyActivity, RAW_DATA, NAME_MAPPING } from './data';
 import { Activity } from './types';
 
 // --- UI Components & Icons ---
@@ -31,12 +31,13 @@ const Navbar = () => (
       <div className="flex justify-between items-center h-14 sm:h-16">
         <Link to="/" className="flex items-center gap-2 text-blue-900 font-black text-lg">
           <div className="w-7 h-7 bg-blue-900 rounded-lg flex items-center justify-center text-white text-[8px]">TOYO</div>
-          <span className="hidden sm:inline tracking-tighter">社会貢献活動ディレクトリ 2024</span>
-          <span className="sm:hidden">社会貢献 2024</span>
+          <span className="hidden sm:inline tracking-tighter">2024年度 社会貢献活動情報</span>
+          <span className="sm:hidden">社会貢献情報 2024</span>
         </Link>
         <div className="flex gap-4 sm:gap-6 text-xs sm:text-sm font-black text-gray-400">
           <Link to="/" className="hover:text-blue-900 transition-colors">ホーム</Link>
-          <Link to="/list" className="hover:text-blue-900 transition-colors">一覧</Link>
+          <Link to="/list" className="hover:text-blue-900 transition-colors">教員一覧</Link>
+          <Link to="/org" className="hover:text-blue-900 transition-colors">組織一覧</Link>
         </div>
       </div>
     </div>
@@ -82,7 +83,7 @@ const SDGBadge = ({ sdgs }: { sdgs: string }) => {
   if (!sdgs || sdgs === "―" || sdgs === "該当なし") return null;
   const codes = sdgs.split(/[ ,;\n-]+/).filter(Boolean);
   return (
-    <div className="flex flex-wrap gap-1.5">
+    <div className="flex wrap gap-1.5">
       {codes.map(c => (
         <span key={c} className="px-2 py-0.5 bg-blue-900 text-white text-[9px] font-black rounded border border-blue-900">
           SDG {c}
@@ -105,7 +106,11 @@ const ActivityCard: React.FC<{ activity: Activity }> = ({ activity }) => (
           </span>
         </div>
         <h3 className="text-xl font-black text-gray-900 leading-tight">{activity.title}</h3>
-        {activity.eventName && activity.eventName !== "―" && <p className="text-sm text-blue-600 font-bold mt-1">{activity.eventName}</p>}
+        {activity.eventName && activity.eventName !== "―" && (
+          <p className="text-sm text-blue-600 font-bold mt-1 whitespace-pre-line">
+            {activity.eventName}
+          </p>
+        )}
       </div>
     </div>
     
@@ -116,7 +121,7 @@ const ActivityCard: React.FC<{ activity: Activity }> = ({ activity }) => (
       </div>
       <div className="bg-gray-50/50 p-4 rounded-2xl border border-gray-50">
         <label className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] block mb-1">開催・場所</label>
-        <p className="text-xs text-gray-700 font-bold">{activity.date} / {activity.location}</p>
+        <p className="text-xs text-gray-700 font-bold whitespace-pre-line">{activity.date} / {activity.location}</p>
       </div>
       <div className="bg-gray-50/50 p-4 rounded-2xl border border-gray-50">
         <label className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] block mb-1">主催・対象</label>
@@ -309,12 +314,17 @@ const DepartmentList = () => (
         <Link 
           key={dept} 
           to={`/dept/${encodeURIComponent(dept)}`}
-          className="flex items-center justify-between p-6 bg-white rounded-3xl border-2 border-gray-50 shadow-sm hover:border-blue-600 hover:bg-blue-50/30 transition-all group"
+          className="flex items-center justify-between p-6 bg-white rounded-3xl border-2 border-gray-50 shadow-sm hover:border-blue-600 hover:bg-blue-50/30 transition-all group text-left"
         >
-          <span className="text-lg font-black text-gray-700 group-hover:text-blue-900 transition-colors">
-            {dept}
-          </span>
-          <div className="w-10 h-10 rounded-full flex items-center justify-center bg-gray-50 text-gray-300 group-hover:bg-blue-600 group-hover:text-white transition-all">
+          <div>
+            <span className="text-lg font-black text-gray-700 group-hover:text-blue-900 transition-colors block">
+              {dept}
+            </span>
+            <span className="text-[10px] font-bold text-gray-400 group-hover:text-blue-600/60 block mt-0.5 italic">
+              {NAME_MAPPING[dept]}
+            </span>
+          </div>
+          <div className="w-10 h-10 rounded-full flex items-center justify-center bg-gray-50 text-gray-300 group-hover:bg-blue-600 group-hover:text-white transition-all shrink-0">
             <ChevronRight />
           </div>
         </Link>
@@ -335,12 +345,17 @@ const OrganizationList = () => (
         <Link 
           key={org} 
           to={`/org/${encodeURIComponent(org)}`}
-          className="flex items-center justify-between p-6 bg-white rounded-3xl border-2 border-gray-50 shadow-sm hover:border-blue-600 hover:bg-blue-50/30 transition-all group"
+          className="flex items-center justify-between p-6 bg-white rounded-3xl border-2 border-gray-50 shadow-sm hover:border-blue-600 hover:bg-blue-50/30 transition-all group text-left"
         >
-          <span className="text-lg font-black text-gray-700 group-hover:text-blue-900 transition-colors">
-            {org}
-          </span>
-          <div className="w-10 h-10 rounded-full flex items-center justify-center bg-gray-50 text-gray-300 group-hover:bg-blue-600 group-hover:text-white transition-all">
+          <div>
+            <span className="text-lg font-black text-gray-700 group-hover:text-blue-900 transition-colors block">
+              {org}
+            </span>
+            <span className="text-[10px] font-bold text-gray-400 group-hover:text-blue-600/60 block mt-0.5 italic">
+              {NAME_MAPPING[org]}
+            </span>
+          </div>
+          <div className="w-10 h-10 rounded-full flex items-center justify-center bg-gray-50 text-gray-300 group-hover:bg-blue-600 group-hover:text-white transition-all shrink-0">
             <ChevronRight />
           </div>
         </Link>
@@ -358,8 +373,10 @@ const FacultyListPage = () => {
     <div className="max-w-4xl mx-auto px-4 py-12">
       <Breadcrumbs paths={[{ label: '一覧', to: '/list' }, { label: decodedDept }]} />
       <div className="mb-12">
+        <span className="inline-block px-4 py-1 bg-blue-900 text-white text-[11px] font-bold rounded-lg uppercase tracking-wider shadow-sm mb-4">
+          {NAME_MAPPING[decodedDept] || 'Faculty Members'}
+        </span>
         <h2 className="text-4xl font-black text-gray-900 tracking-tighter leading-tight">{decodedDept}</h2>
-        <p className="text-[10px] font-black text-blue-600 mt-2 uppercase tracking-[0.4em]">Faculty Members</p>
       </div>
       
       <div className="bg-white rounded-[3rem] border border-gray-100 shadow-sm overflow-hidden divide-y divide-gray-50">
@@ -459,9 +476,10 @@ const OrganizationDetail = () => {
       const org = curr.organizer;
       
       // マッピングロジック（特定の主催者名を親組織に集約）
-      if (org.includes("人間科学総合研究所")) groupKey = "人間科学総合研究所";
+      // NOTE: ID 51のように複数の研究所名が含まれる場合、優先度の高い組織を先に判定する
+      if (org.includes("東洋学研究所")) groupKey = "東洋学研究所";
+      else if (org.includes("人間科学総合研究所")) groupKey = "人間科学総合研究所";
       else if (org.includes("現代社会総合研究所")) groupKey = "現代社会総合研究所";
-      else if (org.includes("東洋学研究所")) groupKey = "東洋学研究所";
       else if (org.includes("アジア文化研究所")) groupKey = "アジア文化研究所";
       else if (org.includes("地域活性化研究所")) groupKey = "地域活性化研究所";
       else if (org.includes("工業技術研究所") || org.includes("TSO International")) groupKey = "工業技術研究所";
@@ -502,9 +520,11 @@ const OrganizationDetail = () => {
         <div className="relative z-10 flex flex-col sm:flex-row sm:items-end justify-between gap-8 sm:gap-10">
           <div className="space-y-3 sm:space-y-4">
             <span className="inline-block px-4 py-1 bg-blue-900 text-white text-[11px] font-bold rounded-lg uppercase tracking-wider shadow-sm">
-              Organization / Office
+              {NAME_MAPPING[decodedName] || 'Organization / Office'}
             </span>
-            <h1 className="text-4xl sm:text-6xl font-black tracking-tighter leading-tight text-gray-900">{decodedName}</h1>
+            <h1 className="text-4xl sm:text-6xl font-black tracking-tighter leading-tight text-gray-900">
+              {decodedName}
+            </h1>
           </div>
           <div className="text-center sm:text-right pr-4">
             <div className="text-3xl sm:text-4xl font-bold text-gray-500 leading-none mb-1 italic">
@@ -532,7 +552,10 @@ const OrganizationDetail = () => {
                 : 'border-gray-50 bg-white text-gray-700 hover:border-blue-200 hover:bg-gray-50'
               }`}
             >
-              すべて表示
+              <div>
+                <span>すべて表示</span>
+                <span className="block text-[8px] opacity-60 font-bold italic">All Units</span>
+              </div>
               <ChevronRight />
             </button>
             {groupedActivities.map(([group]) => (
@@ -545,7 +568,12 @@ const OrganizationDetail = () => {
                   : 'border-gray-50 bg-white text-gray-700 hover:border-blue-200 hover:bg-gray-50'
                 }`}
               >
-                {group}
+                <div>
+                  <span>{group}</span>
+                  <span className="block text-[8px] opacity-60 font-bold italic leading-tight mt-0.5">
+                    {NAME_MAPPING[group] || 'Research Unit'}
+                  </span>
+                </div>
                 <ChevronRight />
               </button>
             ))}
@@ -559,12 +587,17 @@ const OrganizationDetail = () => {
             .filter(([group]) => !selectedSubGroup || group === selectedSubGroup)
             .map(([group, list]) => (
               <div key={group} className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div className="flex items-center gap-4">
-                  <h2 className="text-sm font-black text-blue-900 uppercase tracking-widest bg-blue-50 px-6 py-3 rounded-full border border-blue-100 shadow-sm flex items-center gap-3">
-                    <span className="w-2 h-2 bg-blue-900 rounded-full"></span>
-                    {group}
-                  </h2>
-                  <div className="h-px flex-1 bg-gray-100"></div>
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center gap-4">
+                    <h2 className="text-sm font-black text-blue-900 uppercase tracking-widest bg-blue-50 px-6 py-3 rounded-full border border-blue-100 shadow-sm flex items-center gap-3">
+                      <span className="w-2 h-2 bg-blue-900 rounded-full"></span>
+                      {group}
+                    </h2>
+                    <div className="h-px flex-1 bg-gray-100"></div>
+                  </div>
+                  <p className="text-[10px] font-black text-gray-400 italic ml-6 uppercase tracking-widest">
+                    {NAME_MAPPING[group]}
+                  </p>
                 </div>
                 <div className="space-y-10">
                   {list.map(activity => (

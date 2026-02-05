@@ -1,3 +1,4 @@
+
 import { Activity } from './types';
 
 export const ACADEMIC_AFFAIRS_DATA: Activity[] = [
@@ -49,7 +50,7 @@ export const ACADEMIC_AFFAIRS_DATA: Activity[] = [
     location: "白山神社の氏子町会の範囲",
     target: "社会人・一般, 市民団体",
     summary: "ボランティアとして地域のお祭り・イベントをお手伝いし、また「社会調査および実習」などのフィールドワークの授業で地域の皆さんに調査にご協力いただくなど、白山地域と連携しながら実地で学ぶ機会を設けています。",
-    url: "https://sites.google.com/toyo.jp/soc-news-151/news一覧社会学科/20240921",
+    url: "https://sites.google.com/toyo.jp/soc-news-151/news%E4%B8%80%E8%A6%A7%E7%A4%BE%E4%BC%9A%E5%AD%A6%E7%A7%91/20240921_%E6%9D%B1%E6%B4%8B%E5%A4%A7%E5%AD%A6%E7%A4%BE%E4%BC%9A%E5%AD%A6%E9%83%A8%E3%81%AE%E5%AD%A6%E7%94%9F%E3%81%8C%E7%99%BD%E5%B1%B1%E7%A5%9E%E7%A4%BE%E4%BE%8B%E5%A4%A7%E7%A5%AD%E3%81%AB%E5%8F%82%E5%8A%A0%E3%81%97%E3%81%BE%E3%81%97%E3%81%9F?authuser=0",
     sdgs: "11"
   },
   // --- 国際学部教務課 ---
