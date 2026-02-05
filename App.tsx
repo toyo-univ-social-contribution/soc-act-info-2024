@@ -83,7 +83,7 @@ const SDGBadge = ({ sdgs }: { sdgs: string }) => {
   if (!sdgs || sdgs === "―" || sdgs === "該当なし") return null;
   const codes = sdgs.split(/[ ,;\n-]+/).filter(Boolean);
   return (
-    <div className="flex wrap gap-1.5">
+    <div className="flex flex-wrap gap-1.5">
       {codes.map(c => (
         <span key={c} className="px-2 py-0.5 bg-blue-900 text-white text-[9px] font-black rounded border border-blue-900">
           SDG {c}
@@ -133,17 +133,17 @@ const ActivityCard: React.FC<{ activity: Activity }> = ({ activity }) => (
       <p className="text-sm text-gray-600 leading-relaxed whitespace-pre-wrap">{activity.summary}</p>
     </div>
 
-    <div className="flex flex-col sm:flex-row items-center justify-between border-t border-gray-50 pt-5 gap-4">
+    <div className="flex flex-col md:flex-row md:items-center justify-between border-t border-gray-50 pt-5 gap-6">
       <div className="flex-1 flex justify-start">
         <SDGBadge sdgs={activity.sdgs} />
       </div>
       {activity.url && activity.url !== "―" && activity.url !== "—" && (
-        <div className="w-full sm:w-auto flex justify-end">
+        <div className="w-full md:w-auto flex justify-end shrink-0">
           <a 
             href={activity.url.split('\n')[0].trim()} 
             target="_blank" 
             rel="noopener noreferrer"
-            className="text-xs font-black bg-gray-900 text-white px-5 py-2.5 rounded-full hover:bg-blue-600 transition-all flex items-center gap-2 whitespace-nowrap"
+            className="text-xs font-black bg-gray-900 text-white px-5 py-2.5 rounded-full hover:bg-blue-600 transition-all flex items-center gap-2 whitespace-nowrap min-w-fit"
           >
             詳細サイトへ <ChevronRight />
           </a>
