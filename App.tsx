@@ -251,13 +251,15 @@ const Home = () => {
 
       <section className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <Link to="/list" className="group p-10 bg-white rounded-[3rem] border border-gray-100 shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-500 relative overflow-hidden">
-          <div className="w-14 h-14 bg-blue-900 text-white rounded-2xl flex items-center justify-center mb-8 shadow-lg shadow-blue-900/20 group-hover:scale-110 transition-transform">
-            <UserIcon />
+          <div className="flex items-center gap-6 mb-8">
+            <div className="w-14 h-14 bg-blue-900 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-blue-900/20 group-hover:scale-110 transition-transform shrink-0">
+              <UserIcon />
+            </div>
+            <h2 className="text-3xl font-black text-gray-900 flex items-center gap-3">
+              教員別リスト
+              <ChevronRight />
+            </h2>
           </div>
-          <h2 className="text-3xl font-black text-gray-900 mb-4 flex items-center gap-3">
-            教員別リスト
-            <ChevronRight />
-          </h2>
           <p className="text-gray-400 font-bold text-sm leading-relaxed mb-10">
             学部・学科ごとに所属教員を一覧表示。専門性を活かした具体的な活動実績を閲覧できます。
           </p>
@@ -269,13 +271,15 @@ const Home = () => {
         </Link>
 
         <Link to="/org" className="group p-10 bg-white rounded-[3rem] border border-gray-100 shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-500 relative overflow-hidden">
-          <div className="w-14 h-14 bg-blue-900 text-white rounded-2xl flex items-center justify-center mb-8 shadow-lg shadow-blue-900/20 group-hover:scale-110 transition-transform">
-            <OrgIcon />
+          <div className="flex items-center gap-6 mb-8">
+            <div className="w-14 h-14 bg-blue-900 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-blue-900/20 group-hover:scale-110 transition-transform shrink-0">
+              <OrgIcon />
+            </div>
+            <h2 className="text-3xl font-black text-gray-900 flex items-center gap-3">
+              組織・事務局別リスト
+              <ChevronRight />
+            </h2>
           </div>
-          <h2 className="text-3xl font-black text-gray-900 mb-4 flex items-center gap-3">
-            組織・プロジェクト別
-            <ChevronRight />
-          </h2>
           <p className="text-gray-400 font-bold text-sm leading-relaxed mb-10">
             研究所、センター、事務局単位での活動。組織的な社会貢献プロジェクトを紹介します。
           </p>
@@ -619,7 +623,7 @@ const App = () => {
             <div className="w-12 h-1 bg-gray-100 mx-auto rounded-full"></div>
             <p className="text-gray-400 text-[10px] font-black uppercase tracking-[0.5em]">© 2025 Toyo University Archives</p>
             <div className="max-w-2xl mx-auto text-gray-300 text-[11px] font-bold leading-relaxed px-6">
-              本サイトは、2024年度の東洋大学の教員および組織による社会貢献活動の実績をとりまとめたアーカイブです。
+              本サイトは, 2024年度の東洋大学の教員および組織による社会貢献活動の実績をとりまとめたアーカイブです。
             </div>
           </div>
         </footer>
