@@ -196,7 +196,7 @@ const Home = () => {
       <section className="text-center space-y-8">
         <h1 className="text-5xl sm:text-7xl font-black text-gray-900 tracking-tighter leading-none">
           <span className="text-2xl sm:text-4xl block text-blue-900/30 mb-2 tracking-tight">2024年度</span>
-          社会貢献活動<br /><span className="text-blue-900">ARCHIVES</span>
+          東洋大学 社会貢献活動<br /><span className="text-blue-900">ARCHIVES</span>
         </h1>
 
         <div className="max-w-xl mx-auto mt-12 relative group">
