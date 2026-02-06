@@ -286,15 +286,6 @@ const Home = () => {
           <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-blue-50 rounded-full opacity-50 group-hover:scale-150 transition-transform duration-1000"></div>
         </Link>
       </section>
-
-      <section className="bg-white rounded-[3rem] sm:rounded-[4rem] p-10 sm:p-20 text-gray-900 border border-gray-100 shadow-sm relative overflow-hidden text-center">
-        <div className="relative z-10 space-y-4 sm:space-y-6 flex flex-col items-center">
-          <h2 className="text-2xl sm:text-4xl font-black italic tracking-tighter w-full text-blue-900">"Philosophy as the Foundation of all Studies"</h2>
-          <p className="text-gray-500 font-bold text-[9px] min-[400px]:text-[11px] sm:text-sm md:text-base whitespace-nowrap leading-tight w-full max-w-full px-2">
-            「諸学の基礎は哲学にあり」 東洋大学は、教育・研究の成果を社会に還元し、貢献し続けます。
-          </p>
-        </div>
-      </section>
     </div>
   );
 };
