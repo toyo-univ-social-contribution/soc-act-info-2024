@@ -48,9 +48,42 @@ const Breadcrumbs = ({ paths }: { paths: { label: string; to?: string }[] }) => 
   const [copied, setCopied] = React.useState(false);
   const handleCopy = () => {
     const url = window.location.href;
-    navigator.clipboard.writeText(url);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    
+    const performCopy = async () => {
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(url);
+          return true;
+        }
+      } catch (err) {
+        console.warn('Clipboard API failed, trying fallback...', err);
+      }
+
+      // Fallback method
+      try {
+        const textArea = document.createElement("textarea");
+        textArea.value = url;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-9999px";
+        textArea.style.top = "0";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        const successful = document.execCommand('copy');
+        document.body.removeChild(textArea);
+        return successful;
+      } catch (err) {
+        console.error('Fallback copy failed', err);
+        return false;
+      }
+    };
+
+    performCopy().then((success) => {
+      if (success) {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      }
+    });
   };
 
   return (
