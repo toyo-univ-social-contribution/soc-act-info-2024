@@ -298,7 +298,7 @@ const Home = () => {
           </p>
           <div className="flex items-baseline gap-2">
             <span className="text-4xl font-black text-blue-900">{Array.from(new Set(RAW_DATA.filter(d => d.facultyName).map(d => d.facultyName))).length}</span>
-            <span className="text-[10px] font-black text-gray-300 uppercase tracking-widest">Members</span>
+            <span className="text-[10px] font-black text-gray-300 uppercase tracking-widest">Faculty Members</span>
           </div>
           <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-blue-50 rounded-full opacity-50 group-hover:scale-150 transition-transform duration-1000"></div>
         </Link>
@@ -317,8 +317,8 @@ const Home = () => {
             研究所、センター、事務局単位での活動。組織的な社会貢献プロジェクトを紹介します。
           </p>
           <div className="flex items-baseline gap-2">
-            <span className="text-4xl font-black text-blue-900">{ORGANIZATIONS.length}</span>
-            <span className="text-[10px] font-black text-gray-300 uppercase tracking-widest">Entities</span>
+            <span className="text-4xl font-black text-blue-900">{RAW_DATA.filter(d => !d.facultyName).length}</span>
+            <span className="text-[10px] font-black text-gray-300 uppercase tracking-widest">Total Reports</span>
           </div>
           <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-blue-50 rounded-full opacity-50 group-hover:scale-150 transition-transform duration-1000"></div>
         </Link>
